@@ -3,6 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/bg_circle_white.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/bg_rounded_gray_light.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/bg_rounded_selcted.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/bg_rounded_white.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/bg_rounded_white_smoke.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/bg_rounded_yellow_light.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/bg_top_rounded.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/bg_top_rounded_dark.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_filter.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_more2.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_round_add_24.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_round_arrow_back_24.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_round_fastfood_24.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_round_favorite_24.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_round_home_24.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_round_language_24.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_round_search_24.xml" value="0.175" />
+        <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/drawable/ic_round_smart_display_24.xml" value="0.175" />
         <entry key="..\:/Users/IDEHAL/AndroidStudioProjects/NoteAppClean_github/app/src/main/res/layout/activity_main.xml" value="0.32135416666666666" />
       </map>
     </option>
