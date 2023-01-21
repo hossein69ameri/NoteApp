@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.noteappclean_github.R
 import com.example.noteappclean_github.databinding.FragmentNoteBinding
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-class NoteFragment : Fragment() {
+@AndroidEntryPoint
+class NoteFragment : BottomSheetDialogFragment() {
         private lateinit var binding: FragmentNoteBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
