@@ -7,6 +7,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.noteappclean_github.R
 import com.example.noteappclean_github.databinding.ActivityMainBinding
@@ -14,6 +15,7 @@ import com.example.noteappclean_github.domain.entity.NoteEntity
 import com.example.noteappclean_github.presentation.note.NoteFragment
 import com.example.noteappclean_github.util.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -36,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //InitViews
-        binding?.apply {
+        binding.apply {
             //Support toolbar
             setSupportActionBar(notesToolbar)
             //Note fragment
@@ -45,27 +47,37 @@ class MainActivity : AppCompatActivity() {
             }
             //Get data
             viewModel.getAll()
-            viewModel.getAllNotes.observe(this@MainActivity) {
-                showEmpty(it.isEmpty)
-                notesAdapter.setData(it.data!!)
-                noteList.apply {
-                    layoutManager =
-                        StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                    adapter = notesAdapter
-                }
-            }
-            //Filter
-            notesToolbar.setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.actionFilter -> {
-                        priorityFilter()
-                        return@setOnMenuItemClickListener true
+            lifecycleScope.launchWhenCreated {
+                viewModel.getAllNotes.collectLatest {
+                    if (it != null) {
+                        showEmpty(it.isEmpty)
                     }
-                    else -> {
-                        return@setOnMenuItemClickListener false
+                    if (it != null) {
+                        it.data?.let { itData ->
+                            notesAdapter.setData(itData)
+                        }
+                    }
+                    noteList.apply {
+                        layoutManager =
+                            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                        adapter = notesAdapter
                     }
                 }
             }
+        }
+        //Filter
+        binding.notesToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.actionFilter -> {
+                    priorityFilter()
+                    return@setOnMenuItemClickListener true
+                }
+                else -> {
+                    return@setOnMenuItemClickListener false
+                }
+            }
+        }
+
             //Clicks
             notesAdapter.setOnItemClickListener { entity, type ->
                 when (type) {
@@ -87,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+
 
     private fun showEmpty(isShown: Boolean) {
         binding.apply {

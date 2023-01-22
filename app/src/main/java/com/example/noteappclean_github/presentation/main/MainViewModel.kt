@@ -10,6 +10,8 @@ import com.example.noteappclean_github.domain.usecase.PriorityUseCase
 import com.example.noteappclean_github.domain.usecase.SearchUseCase
 import com.example.noteappclean_github.util.DataStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,23 +23,24 @@ class MainViewModel @Inject constructor(
     private val deleteUseCase: DeleteUseCase
 ) : ViewModel() {
 
-    val getAllNotes = MutableLiveData<DataStatus<List<NoteEntity>>>()
+    private val _getAllNotes : MutableStateFlow<DataStatus<List<NoteEntity>>?> = MutableStateFlow(null)
+    val getAllNotes = _getAllNotes.asStateFlow()
 
     fun getAll() = viewModelScope.launch {
         allNoteUseCase.getAllNote().collect{
-            getAllNotes.postValue(DataStatus.success(it,it.isEmpty()))
+            _getAllNotes.value = DataStatus.success(it,it.isEmpty())
         }
     }
 
     fun getPriority(priority : String) = viewModelScope.launch {
         priorityUseCase.priorityNote(priority).collect{
-            getAllNotes.postValue(DataStatus.success(it,it.isEmpty()))
+            _getAllNotes.value = DataStatus.success(it,it.isEmpty())
         }
     }
 
     fun searchNote(search : String) = viewModelScope.launch {
         searchUseCase.searchNote(search).collect{
-            getAllNotes.postValue(DataStatus.success(it,it.isEmpty()))
+            _getAllNotes.value = DataStatus.success(it,it.isEmpty())
         }
     }
 

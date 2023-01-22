@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.noteappclean_github.R
 import com.example.noteappclean_github.databinding.FragmentNoteBinding
 import com.example.noteappclean_github.domain.entity.NoteEntity
 import com.example.noteappclean_github.util.*
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,7 +51,7 @@ class NoteFragment : BottomSheetDialogFragment() {
             type = NEW
         }
         //InitViews
-        binding?.apply {
+        binding.apply {
             //Close
             closeImg.setOnClickListener { dismiss() }
             //Spinner Category
@@ -66,15 +68,18 @@ class NoteFragment : BottomSheetDialogFragment() {
                 prioriesList.addAll(it)
                 prioritySpinner.setupListWithAdapter(it) { itItem -> priority = itItem }
             }
-            //Note data
             if (type == EDIT) {
                 viewModel.getDetail(noteId)
-                viewModel.detailNote.observe(viewLifecycleOwner) { itData ->
-                    itData.data?.let {
-                        titleEdt.setText(it.title)
-                        descEdt.setText(it.desc)
-                        categoriesSpinner.setSelection(categoriesList.getIndexFromList(it.category))
-                        prioritySpinner.setSelection(prioriesList.getIndexFromList(it.priority))
+                lifecycleScope.launchWhenCreated {
+                    viewModel.detailNote.collectLatest {
+                        if (it != null) {
+                            it.data?.let { itData ->
+                                titleEdt.setText(itData.title)
+                                descEdt.setText(itData.desc)
+                                categoriesSpinner.setSelection(categoriesList.getIndexFromList(itData.category))
+                                prioritySpinner.setSelection(prioriesList.getIndexFromList(itData.priority))
+                            }
+                        }
                     }
                 }
             }

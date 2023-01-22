@@ -11,6 +11,8 @@ import com.example.noteappclean_github.domain.usecase.UpdateUseCase
 import com.example.noteappclean_github.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,7 +25,10 @@ class NoteViewModel @Inject constructor(
     //Spinners
     val categoriesList = MutableLiveData<MutableList<String>>()
     val prioritiesList = MutableLiveData<MutableList<String>>()
-    val detailNote = MutableLiveData<DataStatus<NoteEntity>>()
+    private val _detailNote : MutableStateFlow<DataStatus<NoteEntity>?> = MutableStateFlow(null)
+    val detailNote = _detailNote.asStateFlow()
+
+
 
     fun loadCategoriesData() = viewModelScope.launch(Dispatchers.IO) {
         val data = mutableListOf(WORK, EDUCATION, HOME, HEALTH)
@@ -45,7 +50,7 @@ class NoteViewModel @Inject constructor(
 
     fun getDetail(id : Int) = viewModelScope.launch {
         detailUseCase.detailNote(id).collect{
-            detailNote.postValue(DataStatus.success(it,false))
+            _detailNote.value = DataStatus.success(it,false)
         }
     }
 
