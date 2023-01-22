@@ -9,6 +9,9 @@ import com.example.noteappclean_github.R
 import com.example.noteappclean_github.databinding.ActivityMainBinding
 import com.example.noteappclean_github.domain.entity.NoteEntity
 import com.example.noteappclean_github.presentation.note.NoteFragment
+import com.example.noteappclean_github.util.BUNDLE_ID
+import com.example.noteappclean_github.util.DELETE
+import com.example.noteappclean_github.util.EDIT
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -48,6 +51,26 @@ class MainActivity : AppCompatActivity() {
                 noteList.apply {
                     layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                     adapter = noteAdapter
+                }
+            }
+
+            noteAdapter.setOnItemClickListener { noteEntity, state ->
+                when(state){
+                    EDIT -> {
+                        val noteFragment = NoteFragment()
+                        val bundle = Bundle()
+                        bundle.putInt(BUNDLE_ID,noteEntity.id)
+                        noteFragment.arguments = bundle
+                        noteFragment.show(supportFragmentManager,NoteFragment().tag)
+                    }
+                    DELETE -> {
+                        entity.id = noteEntity.id
+                        entity.desc = noteEntity.desc
+                        entity.title = noteEntity.title
+                        entity.priority = noteEntity.priority
+                        entity.category = noteEntity.category
+                        viewModel.deleteNote(entity)
+                    }
                 }
             }
         }
