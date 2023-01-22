@@ -11,6 +11,8 @@ MVVM + Clean Architecture
 
 Android Architecture Components
 
+Room Database
+
 Kotlin Coroutines + Flow
 
 LiveData
