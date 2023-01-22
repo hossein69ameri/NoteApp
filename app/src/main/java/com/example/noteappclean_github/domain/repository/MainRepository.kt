@@ -7,7 +7,6 @@ interface MainRepository {
 
     fun getAllNote() : Flow<MutableList<NoteEntity>>
     fun searchNotes(search: String) : Flow<MutableList<NoteEntity>>
-    fun priorityNotes(priority: String) : Flow<MutableList<NoteEntity>>
     suspend fun deleteNote(entity: NoteEntity)
 
 }

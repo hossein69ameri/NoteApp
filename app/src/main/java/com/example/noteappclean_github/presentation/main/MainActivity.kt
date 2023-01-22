@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
 
     //Other
     private val viewModel: MainViewModel by viewModels()
-    private var selectedItem = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,18 +61,6 @@ class MainActivity : AppCompatActivity() {
                             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                         adapter = notesAdapter
                     }
-                }
-            }
-        }
-        //Filter
-        binding.notesToolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.actionFilter -> {
-                    priorityFilter()
-                    return@setOnMenuItemClickListener true
-                }
-                else -> {
-                    return@setOnMenuItemClickListener false
                 }
             }
         }
@@ -130,25 +117,5 @@ class MainActivity : AppCompatActivity() {
             }
         })
         return super.onCreateOptionsMenu(menu)
-    }
-
-    private fun priorityFilter() {
-        val builder = AlertDialog.Builder(this)
-
-        val priority = arrayOf("All", HIGH, NORMAL, LOW)
-        builder.setSingleChoiceItems(priority, selectedItem) { dialog, item ->
-            when (item) {
-                0 -> {
-                    viewModel.getAll()
-                }
-                in 1..3 -> {
-                    viewModel.getPriority(priority[item])
-                }
-            }
-            selectedItem = item
-            dialog.dismiss()
-        }
-        val dialog: AlertDialog = builder.create()
-        dialog.show()
     }
 }

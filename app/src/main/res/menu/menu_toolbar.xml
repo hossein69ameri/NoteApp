@@ -8,10 +8,5 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:iconTint="@color/black"
         app:showAsAction="ifRoom|collapseActionView" />
-    <item
-        android:id="@+id/actionFilter"
-        android:icon="@drawable/ic_filter"
-        android:title="@string/filter"
-        app:iconTint="@color/black"
-        app:showAsAction="always" />
+
 </menu>

@@ -77,12 +77,6 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun providePriorityUseCase(mainRepository: MainRepository): PriorityUseCase{
-        return PriorityUseCase(mainRepository)
-    }
-
-    @Provides
-    @Singleton
     fun provideSearchUseCase(mainRepository: MainRepository): SearchUseCase{
         return SearchUseCase(mainRepository)
     }

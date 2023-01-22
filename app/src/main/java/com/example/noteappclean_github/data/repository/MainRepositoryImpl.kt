@@ -15,10 +15,6 @@ class MainRepositoryImpl @Inject constructor(private val noteDao: NoteDao) : Mai
         return noteDao.searchNote(search)
     }
 
-    override fun priorityNotes(priority: String): Flow<MutableList<NoteEntity>> {
-        return noteDao.filetNote(priority)
-    }
-
     override suspend fun deleteNote(entity: NoteEntity) {
         noteDao.deleteNote(entity)
     }
