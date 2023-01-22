@@ -18,18 +18,18 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class NoteFragment : BottomSheetDialogFragment() {
         private lateinit var binding: FragmentNoteBinding
-    private val viewModel: NoteViewModel by viewModels()
-    private var categoryList: MutableList<String> = mutableListOf()
-    private var priorityList: MutableList<String> = mutableListOf()
-
     @Inject
     lateinit var entity: NoteEntity
 
+    //Other
+    private val viewModel: NoteViewModel by viewModels()
     private var category = ""
     private var priority = ""
-    private var noteID = 0
+    private var noteId = 0
     private var type = ""
     private var isEdit = false
+    private val categoriesList: MutableList<String> = mutableListOf()
+    private val prioriesList: MutableList<String> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentNoteBinding.inflate(layoutInflater)
@@ -38,23 +38,24 @@ class NoteFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //bundle
-        noteID = arguments?.getInt(BUNDLE_ID) ?: 0
-        //type
-        if (noteID > 0) {
+        //Bundle
+        noteId = arguments?.getInt(BUNDLE_ID) ?: 0
+        //Type
+        if (noteId > 0) {
             type = EDIT
             isEdit = true
         } else {
-            type = NEW
             isEdit = false
+            type = NEW
         }
-        binding.apply {
+        //InitViews
+        binding?.apply {
             //Close
             closeImg.setOnClickListener { dismiss() }
             //Spinner Category
             viewModel.loadCategoriesData()
             viewModel.categoriesList.observe(viewLifecycleOwner) {
-                categoryList.addAll(it)
+                categoriesList.addAll(it)
                 categoriesSpinner.setupListWithAdapter(it) { itItem ->
                     category = itItem
                 }
@@ -62,40 +63,37 @@ class NoteFragment : BottomSheetDialogFragment() {
             //Spinner priority
             viewModel.loadPrioritiesData()
             viewModel.prioritiesList.observe(viewLifecycleOwner) {
-                priorityList.addAll(it)
+                prioriesList.addAll(it)
                 prioritySpinner.setupListWithAdapter(it) { itItem -> priority = itItem }
             }
-
-            //get detail
+            //Note data
             if (type == EDIT) {
-                viewModel.getDetail(noteID)
-                viewModel.detailNote.observe(viewLifecycleOwner) { itdata ->
-                    itdata.data?.let { note ->
-                        titleEdt.setText(note.title)
-                        descEdt.setText(note.desc)
-                        categoriesSpinner.setSelection(categoryList.getIndexItem(note.category))
-                        prioritySpinner.setSelection(priorityList.getIndexItem(note.priority))
+                viewModel.getDetail(noteId)
+                viewModel.detailNote.observe(viewLifecycleOwner) { itData ->
+                    itData.data?.let {
+                        titleEdt.setText(it.title)
+                        descEdt.setText(it.desc)
+                        categoriesSpinner.setSelection(categoriesList.getIndexFromList(it.category))
+                        prioritySpinner.setSelection(prioriesList.getIndexFromList(it.priority))
                     }
                 }
             }
-
-            // click on save
+            //Click
             saveNote.setOnClickListener {
                 val title = titleEdt.text.toString()
                 val desc = descEdt.text.toString()
-                entity.id = noteID
+                entity.id = noteId
                 entity.title = title
                 entity.desc = desc
                 entity.category = category
                 entity.priority = priority
-                //call save method
+
                 if (title.isNotEmpty() && desc.isNotEmpty()) {
                     viewModel.saveOrEditNote(isEdit, entity)
                 }
-                // exit
+
                 dismiss()
             }
         }
     }
-
 }

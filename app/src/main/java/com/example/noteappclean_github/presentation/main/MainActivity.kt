@@ -2,16 +2,17 @@ package com.example.noteappclean_github.presentation.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.noteappclean_github.R
 import com.example.noteappclean_github.databinding.ActivityMainBinding
 import com.example.noteappclean_github.domain.entity.NoteEntity
 import com.example.noteappclean_github.presentation.note.NoteFragment
-import com.example.noteappclean_github.util.BUNDLE_ID
-import com.example.noteappclean_github.util.DELETE
-import com.example.noteappclean_github.util.EDIT
+import com.example.noteappclean_github.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -19,64 +20,76 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
+    @Inject
+    lateinit var notesAdapter: NoteAdapter
+
+    @Inject
+    lateinit var noteEntity: NoteEntity
+
+    //Other
     private val viewModel: MainViewModel by viewModels()
-
-    @Inject
-    lateinit var noteAdapter: NoteAdapter
-
-    @Inject
-    lateinit var entity: NoteEntity
-
+    private var selectedItem = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        binding.apply {
+        //InitViews
+        binding?.apply {
             //Support toolbar
             setSupportActionBar(notesToolbar)
             //Note fragment
             addNoteBtn.setOnClickListener {
                 NoteFragment().show(supportFragmentManager, NoteFragment().tag)
             }
-            //get all note
+            //Get data
             viewModel.getAll()
             viewModel.getAllNotes.observe(this@MainActivity) {
-                //show empty
                 showEmpty(it.isEmpty)
-                //show in recycler
-                noteAdapter.setData(it.data!!)
+                notesAdapter.setData(it.data!!)
                 noteList.apply {
-                    layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                    adapter = noteAdapter
+                    layoutManager =
+                        StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                    adapter = notesAdapter
                 }
             }
-
-            noteAdapter.setOnItemClickListener { noteEntity, state ->
-                when(state){
+            //Filter
+            notesToolbar.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.actionFilter -> {
+                        priorityFilter()
+                        return@setOnMenuItemClickListener true
+                    }
+                    else -> {
+                        return@setOnMenuItemClickListener false
+                    }
+                }
+            }
+            //Clicks
+            notesAdapter.setOnItemClickListener { entity, type ->
+                when (type) {
                     EDIT -> {
                         val noteFragment = NoteFragment()
                         val bundle = Bundle()
-                        bundle.putInt(BUNDLE_ID,noteEntity.id)
+                        bundle.putInt(BUNDLE_ID, entity.id)
                         noteFragment.arguments = bundle
-                        noteFragment.show(supportFragmentManager,NoteFragment().tag)
+                        noteFragment.show(supportFragmentManager, NoteFragment().tag)
                     }
                     DELETE -> {
-                        entity.id = noteEntity.id
-                        entity.desc = noteEntity.desc
-                        entity.title = noteEntity.title
-                        entity.priority = noteEntity.priority
-                        entity.category = noteEntity.category
-                        viewModel.deleteNote(entity)
+                        noteEntity.id = entity.id
+                        noteEntity.title = entity.title
+                        noteEntity.desc = entity.desc
+                        noteEntity.category = entity.category
+                        noteEntity.priority = entity.priority
+                        viewModel.deleteNote(noteEntity)
                     }
                 }
             }
         }
     }
 
-    private fun showEmpty(isShown : Boolean){
+    private fun showEmpty(isShown: Boolean) {
         binding.apply {
             if (isShown) {
                 emptyLay.visibility = View.VISIBLE
@@ -86,5 +99,44 @@ class MainActivity : AppCompatActivity() {
                 noteList.visibility = View.VISIBLE
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_toolbar, menu)
+        val search = menu.findItem(R.id.actionSearch)
+        val searchView = search.actionView as SearchView
+        searchView.queryHint = getString(R.string.search)
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                viewModel.searchNote(newText)
+                return true
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun priorityFilter() {
+        val builder = AlertDialog.Builder(this)
+
+        val priority = arrayOf("All", HIGH, NORMAL, LOW)
+        builder.setSingleChoiceItems(priority, selectedItem) { dialog, item ->
+            when (item) {
+                0 -> {
+                    viewModel.getAll()
+                }
+                in 1..3 -> {
+                    viewModel.getPriority(priority[item])
+                }
+            }
+            selectedItem = item
+            dialog.dismiss()
+        }
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 }
