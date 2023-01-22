@@ -4,12 +4,12 @@ package com.example.noteappclean_github.di
 import android.content.Context
 import androidx.room.Room
 import com.example.noteappclean_github.data.db.NoteDatabase
+import com.example.noteappclean_github.data.repository.MainRepositoryImpl
 import com.example.noteappclean_github.data.repository.NoteRepositoryImpl
 import com.example.noteappclean_github.domain.entity.NoteEntity
+import com.example.noteappclean_github.domain.repository.MainRepository
 import com.example.noteappclean_github.domain.repository.NoteRepository
-import com.example.noteappclean_github.domain.usecase.DetailUseCase
-import com.example.noteappclean_github.domain.usecase.SaveUseCase
-import com.example.noteappclean_github.domain.usecase.UpdateUseCase
+import com.example.noteappclean_github.domain.usecase.*
 import com.example.noteappclean_github.util.NOTE_DATABASE
 import dagger.Module
 import dagger.Provides
@@ -60,5 +60,36 @@ object DatabaseModule {
     @Singleton
     fun provideUpdateUseCase(noteRepository: NoteRepository): UpdateUseCase{
         return UpdateUseCase(noteRepository)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideMainRepository(noteDataBase: NoteDatabase):MainRepository{
+        return MainRepositoryImpl(noteDataBase.noteDao())
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetAllUseCase(mainRepository: MainRepository): AllNoteUseCase{
+        return AllNoteUseCase(mainRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun providePriorityUseCase(mainRepository: MainRepository): PriorityUseCase{
+        return PriorityUseCase(mainRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchUseCase(mainRepository: MainRepository): SearchUseCase{
+        return SearchUseCase(mainRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteUseCase(mainRepository: MainRepository): DeleteUseCase{
+        return DeleteUseCase(mainRepository)
     }
 }

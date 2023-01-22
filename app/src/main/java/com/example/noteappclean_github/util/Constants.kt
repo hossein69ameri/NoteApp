@@ -12,3 +12,10 @@ const val HEALTH = "Health"
 const val HIGH = "High"
 const val NORMAL = "Normal"
 const val LOW = "Low"
+
+
+const val DELETE = "delete"
+const val EDIT = "edit"
+const val NEW = "new"
+
+const val BUNDLE_ID = "bundle_id"
