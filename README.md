@@ -11,6 +11,10 @@ MVVM + Clean Architecture
 
 Android Architecture Components
 
+Single Activity
+
+Navigation Component
+
 Room Database
 
 Kotlin Coroutines + Flow
