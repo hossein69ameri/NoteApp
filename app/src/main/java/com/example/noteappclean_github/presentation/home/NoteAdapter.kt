@@ -1,4 +1,4 @@
-package com.example.noteappclean_github.presentation.main
+package com.example.noteappclean_github.presentation.home
 
 import android.annotation.SuppressLint
 import android.content.Context

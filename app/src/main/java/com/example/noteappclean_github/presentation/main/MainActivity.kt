@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.noteappclean_github.R
 import com.example.noteappclean_github.databinding.ActivityMainBinding
@@ -21,101 +23,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
-    @Inject
-    lateinit var notesAdapter: NoteAdapter
-
-    @Inject
-    lateinit var noteEntity: NoteEntity
-
-    //Other
-    private val viewModel: MainViewModel by viewModels()
+    private lateinit var navHost: NavHostFragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //InitViews
-        binding.apply {
-            //Support toolbar
-            setSupportActionBar(notesToolbar)
-            //Note fragment
-            addNoteBtn.setOnClickListener {
-                NoteFragment().show(supportFragmentManager, NoteFragment().tag)
-            }
-            //Get data
-            viewModel.getAll()
-            lifecycleScope.launchWhenCreated {
-                viewModel.getAllNotes.collectLatest {
-                    if (it != null) {
-                        showEmpty(it.isEmpty)
-                    }
-                    if (it != null) {
-                        it.data?.let { itData ->
-                            notesAdapter.setData(itData)
-                        }
-                    }
-                    noteList.apply {
-                        layoutManager =
-                            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                        adapter = notesAdapter
-                    }
-                }
-            }
+        navHost = supportFragmentManager.findFragmentById(R.id.navHost) as NavHostFragment
         }
 
-            //Clicks
-            notesAdapter.setOnItemClickListener { entity, type ->
-                when (type) {
-                    EDIT -> {
-                        val noteFragment = NoteFragment()
-                        val bundle = Bundle()
-                        bundle.putInt(BUNDLE_ID, entity.id)
-                        noteFragment.arguments = bundle
-                        noteFragment.show(supportFragmentManager, NoteFragment().tag)
-                    }
-                    DELETE -> {
-                        noteEntity.id = entity.id
-                        noteEntity.title = entity.title
-                        noteEntity.desc = entity.desc
-                        noteEntity.category = entity.category
-                        noteEntity.priority = entity.priority
-                        viewModel.deleteNote(noteEntity)
-                    }
-                }
-            }
-        }
-
-
-    private fun showEmpty(isShown: Boolean) {
-        binding.apply {
-            if (isShown) {
-                emptyLay.visibility = View.VISIBLE
-                noteList.visibility = View.GONE
-            } else {
-                emptyLay.visibility = View.GONE
-                noteList.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_toolbar, menu)
-        val search = menu.findItem(R.id.actionSearch)
-        val searchView = search.actionView as SearchView
-        searchView.queryHint = getString(R.string.search)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                viewModel.searchNote(newText)
-                return true
-            }
-        })
-        return super.onCreateOptionsMenu(menu)
+    override fun onNavigateUp(): Boolean {
+        return navHost.navController.navigateUp() || super.onNavigateUp()
     }
 }

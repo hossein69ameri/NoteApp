@@ -46,44 +46,8 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAddUseCase(noteRepository: NoteRepository): SaveUseCase{
-        return SaveUseCase(noteRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideDetailUseCase(noteRepository: NoteRepository): DetailUseCase{
-        return DetailUseCase(noteRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUpdateUseCase(noteRepository: NoteRepository): UpdateUseCase{
-        return UpdateUseCase(noteRepository)
-    }
-
-
-    @Provides
-    @Singleton
     fun provideMainRepository(noteDataBase: NoteDatabase):MainRepository{
         return MainRepositoryImpl(noteDataBase.noteDao())
     }
 
-    @Provides
-    @Singleton
-    fun provideGetAllUseCase(mainRepository: MainRepository): AllNoteUseCase{
-        return AllNoteUseCase(mainRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideSearchUseCase(mainRepository: MainRepository): SearchUseCase{
-        return SearchUseCase(mainRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideDeleteUseCase(mainRepository: MainRepository): DeleteUseCase{
-        return DeleteUseCase(mainRepository)
-    }
 }
