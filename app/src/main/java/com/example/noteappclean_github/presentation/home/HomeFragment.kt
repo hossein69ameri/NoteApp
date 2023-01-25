@@ -47,23 +47,42 @@ class HomeFragment : Fragment() {
             addNoteBtn.setOnClickListener {
                 NoteFragment().show(parentFragmentManager, NoteFragment().tag)
             }
-            //Get data
-            viewModel.getAll()
-            lifecycleScope.launchWhenCreated {
-                viewModel.getAllNotes.collectLatest {
-                    if (it != null) {
-                        showEmpty(it.isEmpty)
+        }
+        //Get data
+        viewModel.getAll()
+        lifecycleScope.launchWhenCreated {
+            viewModel.getAllNotes.collectLatest {
+                if (it != null) {
+                    showEmpty(it.isEmpty)
+                }
+                if (it != null) {
+                    it.data?.let { itData ->
+                        notesAdapter.setData(itData)
                     }
-                    if (it != null) {
-                        it.data?.let { itData ->
-                            notesAdapter.setData(itData)
-                        }
+                }
+                binding.noteList.apply {
+                    layoutManager =
+                        StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                    adapter = notesAdapter
+                }
+            }
+        }
+
+        //search data
+        lifecycleScope.launchWhenCreated {
+            viewModel.searchNotes.collectLatest {
+                if (it != null) {
+                    showEmpty(it.isEmpty)
+                }
+                if (it != null) {
+                    it.data?.let { itData ->
+                        notesAdapter.setData(itData)
                     }
-                    noteList.apply {
-                        layoutManager =
-                            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                        adapter = notesAdapter
-                    }
+                }
+                binding.noteList.apply {
+                    layoutManager =
+                        StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                    adapter = notesAdapter
                 }
             }
         }
@@ -88,9 +107,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-
-
-
     }
 
     private fun showEmpty(isShown: Boolean) {

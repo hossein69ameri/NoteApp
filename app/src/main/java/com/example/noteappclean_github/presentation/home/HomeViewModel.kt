@@ -23,6 +23,9 @@ class HomeViewModel @Inject constructor(
     private val _getAllNotes : MutableStateFlow<DataStatus<List<NoteEntity>>?> = MutableStateFlow(null)
     val getAllNotes = _getAllNotes.asStateFlow()
 
+    private val _searchNotes : MutableStateFlow<DataStatus<List<NoteEntity>>?> = MutableStateFlow(null)
+    val searchNotes = _searchNotes.asStateFlow()
+
     fun getAll() = viewModelScope.launch {
         allNoteUseCase.getAllNote().collect{
             _getAllNotes.value = DataStatus.success(it,it.isEmpty())
@@ -31,7 +34,7 @@ class HomeViewModel @Inject constructor(
 
     fun searchNote(search : String) = viewModelScope.launch {
         searchUseCase.searchNote(search).collect{
-            _getAllNotes.value = DataStatus.success(it,it.isEmpty())
+            _searchNotes.value = DataStatus.success(it,it.isEmpty())
         }
     }
 
