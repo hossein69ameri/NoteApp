@@ -11,6 +11,10 @@ MVVM + Clean Architecture
 
 Android Architecture Components
 
+Single Activity
+
+Navigation Component
+
 Room Database
 
 Kotlin Coroutines + Flow
@@ -24,6 +28,8 @@ Dependency injection
 [Room Database](https://developer.android.com/training/data-storage/room)  - Save data in a local database using Room.
 
 [Hilt](https://dagger.dev/hilt/)  - Dependency injection.
+
+[Navigation component](https://developer.android.com/guide/navigation)  -  Fragment routing handler
 
 [ViewBinding](https://developer.android.com/topic/libraries/view-binding) - View binding is a feature that allows you to more easily write code that interacts with views 
 
